@@ -1,4 +1,81 @@
-# @gradio/tootils
+# @self/tootils
+
+## 0.7.1
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.1
+
+## 0.7.0
+
+### Features
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - SSR e2e + fixes
+
+### Dependencies
+
+- @gradio/statustracker@0.8.0
+- @gradio/utils@0.7.0
+
+## 0.7.0-beta.5
+
+### Features
+
+- [#9590](https://github.com/gradio-app/gradio/pull/9590) [`e853c41`](https://github.com/gradio-app/gradio/commit/e853c413583d91186aef3aceb0849d0ec0494834) - SSR e2e + fixes.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.5
+
+## 0.6.5-beta.4
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.4
+
+## 0.6.5-beta.3
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.3
+
+## 0.6.5-beta.2
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.2
+
+## 0.6.5-beta.2
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.2
+- @gradio/utils@0.7.0-beta.2
+
+## 0.6.5-beta.1
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.1
+- @gradio/utils@0.7.0-beta.1
+
+## 0.6.5
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.1
+- @gradio/statustracker@0.7.6
+
+## 0.6.4
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/statustracker@0.7.5
 
 ## 0.6.3
 

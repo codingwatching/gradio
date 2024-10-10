@@ -1,4 +1,32 @@
-# @gradio/storybook
+# @self/storybook
+
+## 0.7.0
+
+### Features
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - 🔡 Update default core Gradio font
+
+## 0.7.0-beta.1
+
+### Features
+
+- [#9204](https://github.com/gradio-app/gradio/pull/9204) [`3c73f00`](https://github.com/gradio-app/gradio/commit/3c73f00e3016b16917ebfe0bad390f2dff683457) - 🔡 Update default core Gradio font.  Thanks @hannahblair!
+
+## 0.6.2
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+## 0.6.1
+
+### Features
+
+- [#9102](https://github.com/gradio-app/gradio/pull/9102) [`efdc323`](https://github.com/gradio-app/gradio/commit/efdc3231a7bde38cfe45d10086d0d36a24c1b9b4) - Initial SSR refactor.  Thanks @pngwn!
+
+### Fixes
+
+- [#9116](https://github.com/gradio-app/gradio/pull/9116) [`ba6322e`](https://github.com/gradio-app/gradio/commit/ba6322ec2bb975f15389fe0700816bf671c6819d) - Fix image height content fit.  Thanks @hannahblair!
 
 ## 0.6.0
 

@@ -12,15 +12,19 @@ import fastapi
 from fastapi.responses import RedirectResponse
 from huggingface_hub import HfFolder, whoami
 
-from .utils import get_space
+from gradio.utils import get_space
 
 OAUTH_CLIENT_ID = os.environ.get("OAUTH_CLIENT_ID")
 OAUTH_CLIENT_SECRET = os.environ.get("OAUTH_CLIENT_SECRET")
 OAUTH_SCOPES = os.environ.get("OAUTH_SCOPES")
 OPENID_PROVIDER_URL = os.environ.get("OPENID_PROVIDER_URL")
 
+MAX_REDIRECTS = 2
+
 
 def attach_oauth(app: fastapi.FastAPI):
+    from gradio.route_utils import API_PREFIX
+
     try:
         from starlette.middleware.sessions import SessionMiddleware
     except ImportError as e:
@@ -32,10 +36,13 @@ def attach_oauth(app: fastapi.FastAPI):
     # Add `/login/huggingface`, `/login/callback` and `/logout` routes to enable OAuth in the Gradio app.
     # If the app is running in a Space, OAuth is enabled normally. Otherwise, we mock the "real" routes to make the
     # user log in with a fake user profile - without any calls to hf.co.
+    router = fastapi.APIRouter(prefix=API_PREFIX)
+    app.include_router(router)
+
     if get_space() is not None:
-        _add_oauth_routes(app)
+        _add_oauth_routes(router)
     else:
-        _add_mocked_oauth_routes(app)
+        _add_mocked_oauth_routes(router)
 
     # Session Middleware requires a secret key to sign the cookies. Let's use a hash
     # of the OAuth secret key to make it unique to the Space + updated in case OAuth
@@ -51,7 +58,7 @@ def attach_oauth(app: fastapi.FastAPI):
     )
 
 
-def _add_oauth_routes(app: fastapi.FastAPI) -> None:
+def _add_oauth_routes(app: fastapi.APIRouter) -> None:
     """Add OAuth routes to the FastAPI app (login, callback handler and logout)."""
     try:
         from authlib.integrations.base_client.errors import MismatchingStateError
@@ -67,6 +74,7 @@ def _add_oauth_routes(app: fastapi.FastAPI) -> None:
         "OAuth is required but {} environment variable is not set. Make sure you've enabled OAuth in your Space by"
         " setting `hf_oauth: true` in the Space metadata."
     )
+
     if OAUTH_CLIENT_ID is None:
         raise ValueError(msg.format("OAUTH_CLIENT_ID"))
     if OAUTH_CLIENT_SECRET is None:
@@ -105,18 +113,37 @@ def _add_oauth_routes(app: fastapi.FastAPI) -> None:
             # repeatedly. Since cookies cannot get bigger than 4kb, the token will be truncated at some point - hence
             # losing the state. A workaround is to delete the cookie and redirect the user to the login page again.
             # See https://github.com/lepture/authlib/issues/622 for more details.
-            login_uri = "/login/huggingface"
-            if "_target_url" in request.query_params:
-                login_uri += (
-                    "?"
-                    + urllib.parse.urlencode(  # Keep same _target_url as before
-                        {"_target_url": request.query_params["_target_url"]}
-                    )
-                )
+
+            # Delete all keys that are related to the OAuth state, just in case
             for key in list(request.session.keys()):
-                # Delete all keys that are related to the OAuth state
                 if key.startswith("_state_huggingface"):
                     request.session.pop(key)
+
+            # Parse query params
+            nb_redirects = int(request.query_params.get("_nb_redirects", 0))
+            target_url = request.query_params.get("_target_url")
+
+            # Build /login URI with the same query params as before and bump nb_redirects count
+            query_params: dict[str, str | int] = {"_nb_redirects": nb_redirects + 1}
+            if target_url:
+                query_params["_target_url"] = target_url
+
+            login_uri = f"/login/huggingface?{urllib.parse.urlencode(query_params)}"
+
+            # If the user is redirected more than 3 times, it is very likely that the cookie is not working properly.
+            # (e.g. browser is blocking third-party cookies in iframe). In this case, redirect the user in the
+            # non-iframe view.
+            if nb_redirects > MAX_REDIRECTS:
+                host = os.environ.get("SPACE_HOST")
+                if host is None:  # cannot happen in a Space
+                    raise RuntimeError(
+                        "Gradio is not running in a Space (SPACE_HOST environment variable is not set)."
+                        " Cannot redirect to non-iframe view."
+                    ) from None
+                host_url = "https://" + host.rstrip("/")
+                return RedirectResponse(host_url + login_uri)
+
+            # Redirect the user to the login page again
             return RedirectResponse(login_uri)
 
         # OAuth login worked => store the user info in the session and redirect
@@ -130,7 +157,7 @@ def _add_oauth_routes(app: fastapi.FastAPI) -> None:
         return _redirect_to_target(request)
 
 
-def _add_mocked_oauth_routes(app: fastapi.FastAPI) -> None:
+def _add_mocked_oauth_routes(app: fastapi.APIRouter) -> None:
     """Add fake oauth routes if Gradio is run locally and OAuth is enabled.
 
     Clicking on a gr.LoginButton will have the same behavior as in a Space (i.e. gets redirected in a new tab) but
@@ -162,8 +189,12 @@ def _add_mocked_oauth_routes(app: fastapi.FastAPI) -> None:
     @app.get("/logout")
     async def oauth_logout(request: fastapi.Request) -> RedirectResponse:
         """Endpoint that logs out the user (e.g. delete cookie session)."""
+        from gradio.route_utils import API_PREFIX
+
         request.session.pop("oauth_info", None)
-        logout_url = str(request.url).replace("/logout", "/")  # preserve query params
+        logout_url = str(request.url).replace(
+            f"{API_PREFIX}/logout", "/"
+        )  # preserve query params
         return RedirectResponse(url=logout_url)
 
 

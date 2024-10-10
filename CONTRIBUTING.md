@@ -7,7 +7,7 @@ More than 200 awesome developers have contributed to the `gradio` library, and w
 
 Prerequisites:
 
-- [Python 3.8+](https://www.python.org/downloads/)
+- [Python 3.10+](https://www.python.org/downloads/)
 - [Node.js v16.14+](https://nodejs.dev/en/download/package-manager/) (only needed if you are making changes to the frontend)
 - [pnpm 8.1+](https://pnpm.io/8.x/installation) (only needed if you are making changes to the frontend)
  
@@ -133,7 +133,7 @@ bash scripts/run_all_tests.sh
 pnpm test
 ```
 
-- Browser tests are located in `js/app/test` and are defined as `*spec.ts` files. To run browser tests:
+- Browser tests are located in `js/spa/test` and are defined as `*spec.ts` files. To run browser tests:
 
 ```
 pnpm test:browser
@@ -257,7 +257,7 @@ bash scripts/run_lite.sh
 
 If you make changes to the Python code during development, you will need to rebuild the Python packages loaded to Graio-Lite. To do this, run:
 ```
-pnpm --filter @gradio/app pybuild
+pnpm --filter @gradio/lite pybuild
 ```
 
 To generate the release build, run:
@@ -309,7 +309,7 @@ Verify that you've used the correct filename of your gradio app, and that you're
 
 ---
 
-```ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL @gradio/app@1.0.0 build:local: vite build --mode production:local --emptyOutDir "--emptyOutDir"```
+```ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL @self/spa@1.0.0 build:local: vite build --mode production:local --emptyOutDir "--emptyOutDir"```
 
 Delete `/node_modules` and `pnpm-lock.yaml`:
 

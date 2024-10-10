@@ -1,5 +1,136 @@
 # @gradio/simpleimage
 
+## 0.8.1
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.1
+
+## 0.8.0
+
+### Features
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Improve Icon Button consistency
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Ssr part 2
+
+### Dependencies
+
+- @gradio/atoms@0.9.0
+- @gradio/client@1.6.0
+- @gradio/icons@0.8.0
+- @gradio/statustracker@0.8.0
+- @gradio/upload@0.13.0
+- @gradio/utils@0.7.0
+- @gradio/wasm@0.14.0
+
+## 0.8.0-beta.7
+
+### Dependency updates
+
+- @gradio/upload@0.13.0-beta.7
+- @gradio/statustracker@0.8.0-beta.5
+- @gradio/icons@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.5
+
+## 0.8.0-beta.6
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.4
+- @gradio/client@1.6.0-beta.4
+- @gradio/upload@0.13.0-beta.6
+
+## 0.8.0-beta.5
+
+### Dependency updates
+
+- @gradio/upload@0.13.0-beta.5
+- @gradio/statustracker@0.8.0-beta.3
+- @gradio/icons@0.8.0-beta.3
+- @gradio/atoms@0.9.0-beta.3
+
+## 0.8.0-beta.4
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.2
+- @gradio/upload@0.13.0-beta.4
+- @gradio/wasm@0.14.0-beta.3
+
+## 0.8.0-beta.3
+
+### Dependency updates
+
+- @gradio/upload@0.13.0-beta.3
+- @gradio/client@1.6.0-beta.3
+
+## 0.8.0-beta.2
+
+### Features
+
+- [#9339](https://github.com/gradio-app/gradio/pull/9339) [`4c8c6f2`](https://github.com/gradio-app/gradio/commit/4c8c6f2fe603081941c5fdc43f48a0632b9f31ad) - Ssr part 2.  Thanks @pngwn!
+- [#9250](https://github.com/gradio-app/gradio/pull/9250) [`350b0a5`](https://github.com/gradio-app/gradio/commit/350b0a5cafb9176f914f62e7c90de51d4352cc77) - Improve Icon Button consistency.  Thanks @hannahblair!
+
+### Dependency updates
+
+- @gradio/atoms@0.9.0-beta.2
+- @gradio/upload@0.13.0-beta.2
+- @gradio/wasm@0.14.0-beta.2
+- @gradio/client@1.6.0-beta.2
+- @gradio/icons@0.8.0-beta.2
+- @gradio/statustracker@0.8.0-beta.2
+- @gradio/utils@0.7.0-beta.2
+
+## 0.7.1-beta.1
+
+### Dependency updates
+
+- @gradio/atoms@0.8.1-beta.1
+- @gradio/icons@0.8.0-beta.1
+- @gradio/statustracker@0.8.0-beta.1
+- @gradio/utils@0.7.0-beta.1
+- @gradio/client@1.6.0-beta.1
+- @gradio/upload@0.12.4-beta.1
+- @gradio/wasm@0.13.1-beta.1
+
+## 0.7.1
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.1
+- @gradio/statustracker@0.7.6
+- @gradio/atoms@0.8.1
+- @gradio/icons@0.7.2
+- @gradio/wasm@0.13.1
+- @gradio/client@1.5.2
+- @gradio/upload@0.12.4
+
+## 0.7.0
+
+### Features
+
+- [#8930](https://github.com/gradio-app/gradio/pull/8930) [`41d5ab9`](https://github.com/gradio-app/gradio/commit/41d5ab987ba9728753be4509490c79041655809b) - Add `placeholder` param to Image and ImageEditor to replace upload image text.  Thanks @hannahblair!
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Fixes
+
+- [#9116](https://github.com/gradio-app/gradio/pull/9116) [`ba6322e`](https://github.com/gradio-app/gradio/commit/ba6322ec2bb975f15389fe0700816bf671c6819d) - Fix image height content fit.  Thanks @hannahblair!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/upload@0.12.3
+- @gradio/atoms@0.8.0
+- @gradio/client@1.5.1
+- @gradio/statustracker@0.7.5
+- @gradio/wasm@0.13.0
+- @gradio/icons@0.7.1
+
 ## 0.6.5
 
 ### Dependency updates

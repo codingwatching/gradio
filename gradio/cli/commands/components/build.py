@@ -4,12 +4,11 @@ import importlib
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Optional
+from typing import Annotated, Optional
 
 import semantic_version
 import typer
 from tomlkit import dump, parse
-from typing_extensions import Annotated
 
 import gradio
 from gradio.analytics import custom_component_analytics
@@ -162,7 +161,7 @@ def _build(
                 live.update(":red_square: Build failed!")
                 live.update(pipe.stderr)
                 live.update(pipe.stdout)
-                return
+                raise SystemExit("Frontend build failed")
             else:
                 live.update(":white_check_mark: Build succeeded!")
 
@@ -172,6 +171,7 @@ def _build(
         if pipe.returncode != 0:
             live.update(":red_square: Build failed!")
             live.update(pipe.stderr)
+            raise SystemExit("Python build failed")
         else:
             live.update(":white_check_mark: Build succeeded!")
             live.update(

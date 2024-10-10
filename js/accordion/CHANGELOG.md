@@ -1,5 +1,88 @@
 # @gradio/accordion
 
+## 0.4.1
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.1
+- @gradio/column@0.2.0
+
+## 0.3.23-beta.5
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.5
+- @gradio/atoms@0.9.0-beta.5
+- @gradio/column@0.2.0-beta.2
+
+## 0.3.23-beta.4
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.4
+- @gradio/column@0.2.0-beta.2
+
+## 0.3.23-beta.3
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.3
+- @gradio/column@0.2.0-beta.1
+- @gradio/atoms@0.9.0-beta.3
+
+## 0.3.23-beta.2
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.2
+
+## 0.3.23-beta.2
+
+### Dependency updates
+
+- @gradio/atoms@0.9.0-beta.2
+- @gradio/statustracker@0.8.0-beta.2
+- @gradio/utils@0.7.0-beta.2
+- @gradio/column@0.2.0-beta.0
+
+## 0.3.23-beta.1
+
+### Dependency updates
+
+- @gradio/atoms@0.8.1-beta.1
+- @gradio/statustracker@0.8.0-beta.1
+- @gradio/utils@0.7.0-beta.1
+- @gradio/column@0.2.0-beta.0
+
+## 0.3.23-beta.0
+
+## 0.3.23
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.7.0-beta.0
+- @gradio/statustracker@0.8.0-beta.0
+- @gradio/atoms@0.8.1-beta.0
+- @gradio/column@0.2.0-beta.0
+
+## 0.3.22
+
+### Features
+
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/atoms@0.8.0
+- @gradio/statustracker@0.7.5
+- @gradio/column@0.1.3
+
 ## 0.3.21
 
 ### Dependency updates

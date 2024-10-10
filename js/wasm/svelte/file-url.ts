@@ -1,12 +1,14 @@
 import { getWorkerProxyContext } from "./context";
 import { is_self_host } from "../network/host";
 import { getHeaderValue } from "../src/http";
-import type { WorkerProxy } from "../dist";
+import type { WorkerProxy } from "../src/worker-proxy";
 
 type MediaSrc = string | undefined | null;
 
 export function should_proxy_wasm_src(src: MediaSrc): boolean {
-	if (src == null) {
+	const is_browser = typeof window !== "undefined";
+
+	if (src == null || !is_browser) {
 		return false;
 	}
 
@@ -26,7 +28,8 @@ export function should_proxy_wasm_src(src: MediaSrc): boolean {
 let maybeWorkerProxy: WorkerProxy | undefined;
 
 export async function resolve_wasm_src(src: MediaSrc): Promise<MediaSrc> {
-	if (src == null || !should_proxy_wasm_src(src)) {
+	const is_browser = typeof window !== "undefined";
+	if (src == null || !is_browser || !should_proxy_wasm_src(src)) {
 		return src;
 	}
 

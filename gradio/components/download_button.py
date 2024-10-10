@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import tempfile
+from collections.abc import Callable, Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Literal, Sequence
+from typing import TYPE_CHECKING, Literal
 
 from gradio_client import handle_file
 from gradio_client.documentation import document
@@ -107,7 +108,7 @@ class DownloadButton(Component):
         """
         if value is None:
             return None
-        return FileData(path=str(value))
+        return FileData(path=str(value), orig_name=Path(value).name)
 
     def example_payload(self) -> dict:
         return handle_file(

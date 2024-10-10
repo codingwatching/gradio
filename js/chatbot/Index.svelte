@@ -6,6 +6,7 @@
 	import type { Gradio, SelectData, LikeData } from "@gradio/utils";
 
 	import ChatBot from "./shared/ChatBot.svelte";
+	import type { UndoRetryData } from "./shared/utils";
 	import { Block, BlockLabel } from "@gradio/atoms";
 	import type { LoadingStatus } from "@gradio/statustracker";
 	import { Chat } from "@gradio/icons";
@@ -13,8 +14,8 @@
 	import { StatusTracker } from "@gradio/statustracker";
 	import type {
 		Message,
+		ExampleMessage,
 		TupleFormat,
-		MessageRole,
 		NormalisedMessage
 	} from "./types";
 
@@ -34,12 +35,16 @@
 	export let show_share_button = false;
 	export let rtl = false;
 	export let show_copy_button = true;
+	export let show_copy_all_button = false;
 	export let sanitize_html = true;
 	export let bubble_full_width = true;
 	export let layout: "bubble" | "panel" = "bubble";
 	export let type: "tuples" | "messages" = "tuples";
 	export let render_markdown = true;
 	export let line_breaks = true;
+	export let autoscroll = true;
+	export let _retryable = false;
+	export let _undoable = false;
 	export let latex_delimiters: {
 		left: string;
 		right: string;
@@ -52,8 +57,11 @@
 		error: string;
 		like: LikeData;
 		clear_status: LoadingStatus;
+		example_select: SelectData;
+		retry: UndoRetryData;
+		undo: UndoRetryData;
+		clear: null;
 	}>;
-	export let avatar_images: [FileData | null, FileData | null] = [null, null];
 
 	let _value: NormalisedMessage[] | null = [];
 
@@ -62,9 +70,14 @@
 			? normalise_tuples(value as TupleFormat, root)
 			: normalise_messages(value as Message[], root);
 
+	export let avatar_images: [FileData | null, FileData | null] = [null, null];
+	export let like_user_message = false;
 	export let loading_status: LoadingStatus | undefined = undefined;
-	export let height = 400;
+	export let height: number | string | undefined;
+	export let min_height: number | string | undefined;
+	export let max_height: number | string | undefined;
 	export let placeholder: string | null = null;
+	export let examples: ExampleMessage[] | null = null;
 	export let theme_mode: "system" | "light" | "dark";
 </script>
 
@@ -76,7 +89,11 @@
 	{scale}
 	{min_width}
 	{height}
-	allow_overflow={false}
+	{min_height}
+	{max_height}
+	allow_overflow={true}
+	flex={true}
+	overflow_behavior="auto"
 >
 	{#if loading_status}
 		<StatusTracker
@@ -103,28 +120,43 @@
 			selectable={_selectable}
 			{likeable}
 			{show_share_button}
+			{show_copy_all_button}
 			value={_value}
 			{latex_delimiters}
 			{render_markdown}
 			{theme_mode}
 			pending_message={loading_status?.status === "pending"}
+			generating={loading_status?.status === "generating"}
 			{rtl}
 			{show_copy_button}
+			{like_user_message}
 			on:change={() => gradio.dispatch("change", value)}
 			on:select={(e) => gradio.dispatch("select", e.detail)}
 			on:like={(e) => gradio.dispatch("like", e.detail)}
 			on:share={(e) => gradio.dispatch("share", e.detail)}
 			on:error={(e) => gradio.dispatch("error", e.detail)}
+			on:example_select={(e) => gradio.dispatch("example_select", e.detail)}
+			on:retry={(e) => gradio.dispatch("retry", e.detail)}
+			on:undo={(e) => gradio.dispatch("undo", e.detail)}
+			on:clear={() => {
+				value = [];
+				gradio.dispatch("clear");
+			}}
 			{avatar_images}
 			{sanitize_html}
 			{bubble_full_width}
 			{line_breaks}
+			{autoscroll}
 			{layout}
 			{placeholder}
-			upload={gradio.client.upload}
-			_fetch={gradio.client.fetch}
+			{examples}
+			{_retryable}
+			{_undoable}
+			upload={(...args) => gradio.client.upload(...args)}
+			_fetch={(...args) => gradio.client.fetch(...args)}
 			load_component={gradio.load_component}
 			msg_format={type}
+			root={gradio.root}
 		/>
 	</div>
 </Block>
@@ -137,5 +169,10 @@
 		align-items: start;
 		width: 100%;
 		height: 100%;
+		flex-grow: 1;
+	}
+
+	:global(.progress-text) {
+		right: auto;
 	}
 </style>

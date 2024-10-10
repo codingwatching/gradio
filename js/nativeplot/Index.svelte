@@ -7,7 +7,6 @@
 	import { onMount } from "svelte";
 
 	import type { TopLevelSpec as Spec } from "vega-lite";
-	import vegaEmbed from "vega-embed";
 	import type { View } from "vega";
 	import { LineChart as LabelIcon } from "@gradio/icons";
 	import { Empty } from "@gradio/atoms";
@@ -22,6 +21,7 @@
 	export let x: string;
 	export let y: string;
 	export let color: string | null = null;
+	export let root: string;
 	$: unique_colors =
 		color && value && value.datatypes[color] === "nominal"
 			? Array.from(new Set(_data.map((d) => d[color])))
@@ -44,6 +44,7 @@
 	export let y_lim: [number, number] | null = null;
 	export let x_label_angle: number | null = null;
 	export let y_label_angle: number | null = null;
+	export let x_axis_labels_visible = true;
 	export let caption: string | null = null;
 	export let sort: "x" | "y" | "-x" | "-y" | string[] | null = null;
 	function reformat_sort(
@@ -71,7 +72,6 @@
 	}
 	$: _sort = reformat_sort(sort);
 	export let _selectable = false;
-	export let target: HTMLDivElement;
 	let _data: {
 		[x: string]: string | number;
 	}[];
@@ -130,21 +130,27 @@
 	}
 	$: _data = value ? reformat_data(value) : [];
 
+	const is_browser = typeof window !== "undefined";
 	let chart_element: HTMLDivElement;
-	let computed_style = window.getComputedStyle(target);
+	$: computed_style = chart_element
+		? window.getComputedStyle(chart_element)
+		: null;
 	let view: View;
 	let mounted = false;
 	let old_width: number;
+	let resizeObserver: ResizeObserver;
 
-	function load_chart(): void {
+	let vegaEmbed: typeof import("vega-embed").default;
+	async function load_chart(): Promise<void> {
 		if (view) {
 			view.finalize();
 		}
-		if (!value) return;
+		if (!value || !chart_element) return;
 		old_width = chart_element.offsetWidth;
 		const spec = create_vega_lite_spec();
 		if (!spec) return;
-		let resizeObserver = new ResizeObserver(() => {
+		resizeObserver = new ResizeObserver((el) => {
+			if (!el[0].target || !(el[0].target instanceof HTMLElement)) return;
 			if (
 				old_width === 0 &&
 				chart_element.offsetWidth !== 0 &&
@@ -153,11 +159,16 @@
 				// a bug where when a nominal chart is first loaded, the width is 0, it doesn't resize
 				load_chart();
 			} else {
-				view.signal("width", chart_element.offsetWidth).run();
+				view.signal("width", el[0].target.offsetWidth).run();
 			}
 		});
+
+		if (!vegaEmbed) {
+			vegaEmbed = (await import("vega-embed")).default;
+		}
 		vegaEmbed(chart_element, spec, { actions: false }).then(function (result) {
 			view = result.view;
+
 			resizeObserver.observe(chart_element);
 			var debounceTimeout: NodeJS.Timeout;
 			view.addEventListener("dblclick", () => {
@@ -217,6 +228,16 @@
 				release_callback = null;
 			}
 		});
+
+		return () => {
+			mounted = false;
+			if (view) {
+				view.finalize();
+			}
+			if (resizeObserver) {
+				resizeObserver.disconnect();
+			}
+		};
 	});
 
 	$: title,
@@ -234,10 +255,12 @@
 		caption,
 		sort,
 		value,
-		mounted && load_chart();
+		mounted,
+		chart_element,
+		computed_style && requestAnimationFrame(load_chart);
 
 	function create_vega_lite_spec(): Spec | null {
-		if (!value) return null;
+		if (!value || !computed_style) return null;
 		let accent_color = computed_style.getPropertyValue("--color-accent");
 		let body_text_color = computed_style.getPropertyValue("--body-text-color");
 		let borderColorPrimary = computed_style.getPropertyValue(
@@ -345,7 +368,11 @@
 											value: 0
 										},
 							x: {
-								axis: x_label_angle ? { labelAngle: x_label_angle } : {},
+								axis: {
+									...(x_label_angle !== null && { labelAngle: x_label_angle }),
+									labels: x_axis_labels_visible,
+									ticks: x_axis_labels_visible
+								},
 								field: x,
 								title: x_title || x,
 								type: value.datatypes[x],
@@ -490,9 +517,10 @@
 			on:clear_status={() => gradio.dispatch("clear_status", loading_status)}
 		/>
 	{/if}
-	<BlockTitle {show_label} info={undefined}>{label}</BlockTitle>
-	<div bind:this={chart_element}></div>
-	{#if value}
+	<BlockTitle {root} {show_label} info={undefined}>{label}</BlockTitle>
+	{#if value && is_browser}
+		<div bind:this={chart_element}></div>
+
 		{#if caption}
 			<p class="caption">{caption}</p>
 		{/if}

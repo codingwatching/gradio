@@ -1,5 +1,46 @@
 # @gradio/preview
 
+## 0.12.0
+
+### Features
+
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Fix custom component CLI on main/5.0
+
+### Fixes
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Fix package.json `exports` of @gradio/preview
+
+## 0.12.0-beta.1
+
+### Features
+
+- [#9482](https://github.com/gradio-app/gradio/pull/9482) [`bd6c5f2`](https://github.com/gradio-app/gradio/commit/bd6c5f237b0631d86273c7684c3bf2b1011992a3) - Fix custom component CLI on main/5.0.  Thanks @freddyaboulton!
+
+## 0.11.2-beta.0
+
+### Fixes
+
+- [#9468](https://github.com/gradio-app/gradio/pull/9468) [`36d6636`](https://github.com/gradio-app/gradio/commit/36d6636719b31aef07afbc0209713372edf672b5) - Fix package.json `exports` of @gradio/preview.  Thanks @Col0ring!
+
+## 0.11.2
+
+### Features
+
+- [#9478](https://github.com/gradio-app/gradio/pull/9478) [`00d1846`](https://github.com/gradio-app/gradio/commit/00d18463ffeb49d882003f1e4c8bb72f8f7fb596) - fix exports in `main`.  Thanks @abidlabs!
+
+## 0.11.1
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+## 0.11.0
+
+### Features
+
+- [#9091](https://github.com/gradio-app/gradio/pull/9091) [`bbbd1f5`](https://github.com/gradio-app/gradio/commit/bbbd1f5ebee9143db8628af64c5669d99f2574d7) - Be able to set optimizeDeps options in gradio.config.js.  Thanks @freddyaboulton!
+
 ## 0.10.2
 
 ### Fixes

@@ -19,6 +19,7 @@
 		select: SelectData;
 		input: never;
 		focus: never;
+		stop: never;
 		clear_status: LoadingStatus;
 	}>;
 	export let label = "Textbox";
@@ -35,6 +36,8 @@
 	export let container = true;
 	export let scale: number | null = null;
 	export let min_width: number | undefined = undefined;
+	export let submit_btn: string | boolean | null = null;
+	export let stop_btn: string | boolean | null = null;
 	export let show_copy_button = false;
 	export let loading_status: LoadingStatus | undefined = undefined;
 	export let value_is_output = false;
@@ -43,6 +46,8 @@
 	export let autofocus = false;
 	export let autoscroll = true;
 	export let interactive: boolean;
+	export let root: string;
+	export let max_length: number | undefined = undefined;
 </script>
 
 <Block
@@ -68,6 +73,7 @@
 		bind:value_is_output
 		{label}
 		{info}
+		{root}
 		{show_label}
 		{lines}
 		{type}
@@ -75,16 +81,20 @@
 		{text_align}
 		max_lines={!max_lines ? lines + 1 : max_lines}
 		{placeholder}
+		{submit_btn}
+		{stop_btn}
 		{show_copy_button}
 		{autofocus}
 		{container}
 		{autoscroll}
+		{max_length}
 		on:change={() => gradio.dispatch("change", value)}
 		on:input={() => gradio.dispatch("input")}
 		on:submit={() => gradio.dispatch("submit")}
 		on:blur={() => gradio.dispatch("blur")}
 		on:select={(e) => gradio.dispatch("select", e.detail)}
 		on:focus={() => gradio.dispatch("focus")}
+		on:stop={() => gradio.dispatch("stop")}
 		disabled={!interactive}
 	/>
 </Block>

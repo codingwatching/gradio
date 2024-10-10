@@ -38,6 +38,7 @@
 
 <Template let:args>
 	<Chatbot
+		latex_delimiters={[{ left: "$$", right: "$$", display: true }]}
 		value={[
 			[
 				"Can you write a function in Python?",
@@ -61,6 +62,11 @@
 />
 
 <Story
+	name="Chatbot with math disabled, small max_height"
+	args={{ latex_delimiters: [], max_height: 200 }}
+/>
+
+<Story
 	name="Chatbot with text rendered right-to-left"
 	args={{
 		rtl: true,
@@ -81,7 +87,6 @@
 <Story
 	name="Chatbot with copy button"
 	args={{
-		latex_delimiters: [{ left: "$$", right: "$$", display: true }],
 		show_copy_button: true
 	}}
 />
@@ -149,29 +154,6 @@
 			[
 				`# Markdown Example
 
-This document is a showcase of various Markdown capabilities.`
-			],
-			[
-				`## Table of Contents
-
-1. [Text Formatting](#text-formating)
-2. [Code Blocks](#code-blocks)
-3. [Tables](#tables)
-4. [Lists](#lists)
-5. [Links and Images](#links-and-images)
-6. [Quotes](#quotes)`
-			]
-		]
-	}}
-/>
-
-<Story
-	name="Chatbot with headers and lists"
-	args={{
-		value: [
-			[
-				`# Markdown Example
-
 This document is a showcase of various Markdown capabilities.`,
 				`## Table of Contents
 
@@ -210,6 +192,17 @@ This document is a showcase of various Markdown capabilities.`,
    1. Subitem 2.1
    2. Subitem 2.2
 3. Third Item`
+			]
+		]
+	}}
+/>
+
+<Story
+	name="Chatbot with image in markdown"
+	args={{
+		value: [
+			[
+				`![A cheetah](https://cdn.britannica.com/02/92702-120-6A02E613/Cheetah.jpg)`
 			]
 		]
 	}}

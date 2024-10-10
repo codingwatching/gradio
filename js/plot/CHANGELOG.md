@@ -1,5 +1,106 @@
 # @gradio/plot
 
+## 0.7.1
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.1
+
+## 0.7.0
+
+### Features
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Fix plots
+
+### Dependencies
+
+- @gradio/atoms@0.9.0
+- @gradio/icons@0.8.0
+- @gradio/statustracker@0.8.0
+- @gradio/theme@0.3.0
+- @gradio/utils@0.7.0
+
+## 0.7.0-beta.6
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.5
+- @gradio/icons@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.5
+
+## 0.7.0-beta.5
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.4
+
+## 0.7.0-beta.4
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.3
+- @gradio/icons@0.8.0-beta.3
+- @gradio/atoms@0.9.0-beta.3
+
+## 0.7.0-beta.3
+
+### Features
+
+- [#9464](https://github.com/gradio-app/gradio/pull/9464) [`3ac5d9c`](https://github.com/gradio-app/gradio/commit/3ac5d9c972576d82bc365a6532e6e12f55441a30) - Fix plots.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.2
+
+## 0.6.5-beta.2
+
+### Dependency updates
+
+- @gradio/atoms@0.9.0-beta.2
+- @gradio/icons@0.8.0-beta.2
+- @gradio/statustracker@0.8.0-beta.2
+- @gradio/utils@0.7.0-beta.2
+
+## 0.6.5-beta.1
+
+### Dependency updates
+
+- @gradio/atoms@0.8.1-beta.1
+- @gradio/icons@0.8.0-beta.1
+- @gradio/statustracker@0.8.0-beta.1
+- @gradio/utils@0.7.0-beta.1
+- @gradio/theme@0.3.0-beta.1
+
+## 0.6.5
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.1
+- @gradio/statustracker@0.7.6
+- @gradio/atoms@0.8.1
+- @gradio/icons@0.7.2
+- @gradio/theme@0.2.5
+
+## 0.6.4
+
+### Features
+
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+- [#9102](https://github.com/gradio-app/gradio/pull/9102) [`efdc323`](https://github.com/gradio-app/gradio/commit/efdc3231a7bde38cfe45d10086d0d36a24c1b9b4) - Initial SSR refactor.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/atoms@0.8.0
+- @gradio/statustracker@0.7.5
+- @gradio/theme@0.2.4
+- @gradio/icons@0.7.1
+
 ## 0.6.3
 
 ### Dependency updates

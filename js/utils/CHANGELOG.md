@@ -1,5 +1,59 @@
 # @gradio/utils
 
+## 0.7.0
+
+### Features
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Streaming Guides
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Prevent HTML and Markdown height changing when status is hidden
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Ssr part 2
+
+### Dependencies
+
+- @gradio/theme@0.3.0
+
+## 0.7.0-beta.2
+
+### Features
+
+- [#9339](https://github.com/gradio-app/gradio/pull/9339) [`4c8c6f2`](https://github.com/gradio-app/gradio/commit/4c8c6f2fe603081941c5fdc43f48a0632b9f31ad) - Ssr part 2.  Thanks @pngwn!
+- [#9363](https://github.com/gradio-app/gradio/pull/9363) [`3ad28c7`](https://github.com/gradio-app/gradio/commit/3ad28c7e310e8589e0c53b7efee8031e129bece8) - Prevent HTML and Markdown height changing when status is hidden.  Thanks @hannahblair!
+
+## 0.7.0-beta.1
+
+### Features
+
+- [#9187](https://github.com/gradio-app/gradio/pull/9187) [`5bf00b7`](https://github.com/gradio-app/gradio/commit/5bf00b7524ebf399b48719120a49d15bb21bd65c) - make all component SSR compatible.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/theme@0.3.0-beta.1
+
+## 0.7.0
+
+### Features
+
+- [#9173](https://github.com/gradio-app/gradio/pull/9173) [`66349fe`](https://github.com/gradio-app/gradio/commit/66349fe26827e3a3c15b738a1177e95fec7f5554) - Streaming Guides.  Thanks @freddyaboulton!
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/theme@0.2.5
+
+## 0.6.0
+
+### Features
+
+- [#9128](https://github.com/gradio-app/gradio/pull/9128) [`747013b`](https://github.com/gradio-app/gradio/commit/747013bbacebae6bfdda554b45e541e80b2894e0) - Allow accessing the entire row of selected values in `gr.DataFrame`.  Thanks @abidlabs!
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/theme@0.2.4
+
 ## 0.5.2
 
 ### Fixes

@@ -29,7 +29,7 @@
 	export let root: string;
 	export let value_is_output = false;
 
-	export let height: number | undefined;
+	export let height: number | undefined = 450;
 	export let width: number | undefined;
 
 	export let _selectable = false;
@@ -44,6 +44,7 @@
 		"webcam"
 	];
 	export let interactive: boolean;
+	export let placeholder: string | undefined;
 
 	export let brush: Brush;
 	export let eraser: Eraser;
@@ -89,10 +90,14 @@
 	let dragging: boolean;
 
 	$: value && handle_change();
+	const is_browser = typeof window !== "undefined";
+	const raf = is_browser
+		? window.requestAnimationFrame
+		: (cb: (...args: any[]) => void) => cb();
 
 	function wait_for_next_frame(): Promise<void> {
 		return new Promise((resolve) => {
-			requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+			raf(() => raf(() => resolve()));
 		});
 	}
 
@@ -191,6 +196,7 @@
 			{sources}
 			{label}
 			{show_label}
+			{height}
 			on:save={(e) => handle_save()}
 			on:edit={() => gradio.dispatch("edit")}
 			on:clear={() => gradio.dispatch("clear")}
@@ -212,8 +218,9 @@
 			accept_blobs={server.accept_blobs}
 			{layers}
 			status={loading_status?.status}
-			upload={gradio.client.upload}
-			stream_handler={gradio.client.stream}
+			upload={(...args) => gradio.client.upload(...args)}
+			stream_handler={(...args) => gradio.client.stream(...args)}
+			{placeholder}
 		></InteractiveImageEditor>
 	</Block>
 {/if}

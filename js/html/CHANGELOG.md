@@ -1,5 +1,101 @@
 # @gradio/html
 
+## 0.4.1
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.1
+
+## 0.4.0
+
+### Features
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Prevent HTML and Markdown height changing when status is hidden
+
+### Dependencies
+
+- @gradio/atoms@0.9.0
+- @gradio/statustracker@0.8.0
+- @gradio/utils@0.7.0
+- @gradio/icons@0.8.0
+
+## 0.4.0-beta.5
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.5
+- @gradio/icons@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.5
+
+## 0.4.0-beta.4
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.4
+
+## 0.4.0-beta.3
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.3
+- @gradio/icons@0.8.0-beta.3
+- @gradio/atoms@0.9.0-beta.3
+
+## 0.4.0-beta.2
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.2
+
+## 0.4.0-beta.2
+
+### Features
+
+- [#9363](https://github.com/gradio-app/gradio/pull/9363) [`3ad28c7`](https://github.com/gradio-app/gradio/commit/3ad28c7e310e8589e0c53b7efee8031e129bece8) - Prevent HTML and Markdown height changing when status is hidden.  Thanks @hannahblair!
+
+### Dependency updates
+
+- @gradio/atoms@0.9.0-beta.2
+- @gradio/icons@0.8.0-beta.2
+- @gradio/statustracker@0.8.0-beta.2
+- @gradio/utils@0.7.0-beta.2
+
+## 0.3.6-beta.1
+
+### Dependency updates
+
+- @gradio/atoms@0.8.1-beta.1
+- @gradio/icons@0.8.0-beta.1
+- @gradio/statustracker@0.8.0-beta.1
+- @gradio/utils@0.7.0-beta.1
+
+## 0.3.6
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.1
+- @gradio/statustracker@0.7.6
+- @gradio/atoms@0.8.1
+- @gradio/icons@0.7.2
+
+## 0.3.5
+
+### Features
+
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/atoms@0.8.0
+- @gradio/statustracker@0.7.5
+- @gradio/icons@0.7.1
+
 ## 0.3.4
 
 ### Dependency updates

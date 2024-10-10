@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { afterUpdate } from "svelte";
-	import DOMPurify from "dompurify";
 	import render_math_in_element from "katex/contrib/auto-render";
 	import "katex/dist/katex.min.css";
 	import { create_marked } from "./utils";
-
+	import sanitize_server from "sanitize-html";
+	import Amuchina from "amuchina";
 	import "./prism.css";
 
 	export let chatbot = true;
@@ -18,6 +18,7 @@
 	export let render_markdown = true;
 	export let line_breaks = true;
 	export let header_links = false;
+	export let root: string;
 
 	let el: HTMLSpanElement;
 	let html: string;
@@ -28,22 +29,51 @@
 		latex_delimiters
 	});
 
+	const amuchina = new Amuchina();
+	const is_browser = typeof window !== "undefined";
+
+	let sanitize = is_browser ? sanitize_browser : sanitize_server;
+
+	function sanitize_browser(source: string): string {
+		const node = new DOMParser().parseFromString(source, "text/html");
+		walk_nodes(node.body, "A", (node) => {
+			if (node instanceof HTMLElement && "target" in node) {
+				if (is_external_url(node.getAttribute("href"))) {
+					node.setAttribute("target", "_blank");
+					node.setAttribute("rel", "noopener noreferrer");
+				}
+			}
+		});
+
+		return amuchina.sanitize(node).body.innerHTML;
+	}
+
+	function walk_nodes(
+		node: Node | null | HTMLElement,
+		test: string | ((node: Node | HTMLElement) => boolean),
+		callback: (node: Node | HTMLElement) => void
+	): void {
+		if (
+			node &&
+			((typeof test === "string" && node.nodeName === test) ||
+				(typeof test === "function" && test(node)))
+		) {
+			callback(node);
+		}
+		const children = node?.childNodes || [];
+		for (let i = 0; i < children.length; i++) {
+			// @ts-ignore
+			walk_nodes(children[i], test, callback);
+		}
+	}
+
 	const is_external_url = (link: string | null): boolean => {
 		try {
-			return !!link && new URL(link, location.href).origin !== location.origin;
+			return !!link && new URL(link).origin !== new URL(root).origin;
 		} catch (e) {
 			return false;
 		}
 	};
-
-	DOMPurify.addHook("afterSanitizeAttributes", function (node) {
-		if ("target" in node) {
-			if (is_external_url(node.getAttribute("href"))) {
-				node.setAttribute("target", "_blank");
-				node.setAttribute("rel", "noopener noreferrer");
-			}
-		}
-	});
 
 	function escapeRegExp(string: string): string {
 		return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -75,8 +105,8 @@
 			);
 		}
 
-		if (sanitize_html) {
-			parsedValue = DOMPurify.sanitize(parsedValue);
+		if (sanitize_html && sanitize) {
+			parsedValue = sanitize(parsedValue);
 		}
 
 		return parsedValue;
@@ -87,6 +117,7 @@
 	} else {
 		html = "";
 	}
+
 	async function render_html(value: string): Promise<void> {
 		if (latex_delimiters.length > 0 && value) {
 			const containsDelimiter = latex_delimiters.some(
@@ -127,38 +158,25 @@
 	}
 
 	span :global(div[class*="code_wrap"] > button) {
-		position: absolute;
-		top: var(--spacing-sm);
-		right: var(--spacing-sm);
 		z-index: 1;
 		cursor: pointer;
 		border-bottom-left-radius: var(--radius-sm);
-		padding: 5px;
 		padding: var(--spacing-md);
 		width: 25px;
 		height: 25px;
-	}
-
-	span :global(code > button > span) {
 		position: absolute;
-		top: var(--spacing-sm);
-		right: var(--spacing-sm);
-		width: 12px;
-		height: 12px;
+		right: 0;
 	}
 
 	span :global(.check) {
-		position: absolute;
-		top: 0;
-		right: 0;
 		opacity: 0;
 		z-index: var(--layer-top);
 		transition: opacity 0.2s;
-		background: var(--background-fill-primary);
-		padding: var(--size-1);
-		width: 100%;
-		height: 100%;
+		background: var(--code-background-fill);
 		color: var(--body-text-color);
+		position: absolute;
+		top: var(--size-1-5);
+		left: var(--size-1-5);
 	}
 
 	span :global(p:not(:first-child)) {
@@ -185,5 +203,9 @@
 
 	span.md :global(.md-header-anchor > svg) {
 		color: var(--body-text-color-subdued);
+	}
+
+	span :global(table) {
+		word-break: break-word;
 	}
 </style>

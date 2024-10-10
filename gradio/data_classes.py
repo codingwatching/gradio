@@ -7,15 +7,14 @@ import pathlib
 import secrets
 import shutil
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from enum import Enum, auto
 from typing import (
+    Annotated,
     Any,
-    Iterator,
-    List,
     Literal,
     NewType,
     Optional,
-    Tuple,
     TypedDict,
     Union,
 )
@@ -23,7 +22,15 @@ from typing import (
 from fastapi import Request
 from gradio_client.documentation import document
 from gradio_client.utils import traverse
-from pydantic import BaseModel, RootModel, ValidationError
+from pydantic import (
+    BaseModel,
+    GetCoreSchemaHandler,
+    GetJsonSchemaHandler,
+    RootModel,
+    ValidationError,
+)
+from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import core_schema
 from typing_extensions import NotRequired
 
 try:
@@ -42,25 +49,44 @@ class CancelBody(BaseModel):
 
 
 class SimplePredictBody(BaseModel):
-    data: List[Any]
+    data: list[Any]
     session_hash: Optional[str] = None
+
+
+class _StarletteRequestPydanticAnnotation:
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls,
+        _source_type: Any,
+        _handler: GetCoreSchemaHandler,
+    ) -> core_schema.CoreSchema:
+        def validate_request(value: Any) -> Request:
+            if isinstance(value, Request):
+                return value
+            raise ValueError("Input must be a Starlette Request object")
+
+        return core_schema.no_info_plain_validator_function(validate_request)
+
+    @classmethod
+    def __get_pydantic_json_schema__(
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
+    ) -> JsonSchemaValue:
+        return {"type": "object", "title": "StarletteRequest"}
+
+
+PydanticStarletteRequest = Annotated[Request, _StarletteRequestPydanticAnnotation]
 
 
 class PredictBody(BaseModel):
-    model_config = {"arbitrary_types_allowed": True}
-
     session_hash: Optional[str] = None
     event_id: Optional[str] = None
-    data: List[Any]
+    data: list[Any]
     event_data: Optional[Any] = None
     fn_index: Optional[int] = None
     trigger_id: Optional[int] = None
     simple_format: bool = False
     batched: Optional[bool] = (
         False  # Whether the data is a batch of samples (i.e. called from the queue if batch=True) or a single sample (i.e. called from the UI)
-    )
-    request: Optional[Request] = (
-        None  # dictionary of request headers, query parameters, url, etc. (used to to pass in request for queuing)
     )
 
     @classmethod
@@ -77,10 +103,17 @@ class PredictBody(BaseModel):
                 "trigger_id": {"type": "integer"},
                 "simple_format": {"type": "boolean"},
                 "batched": {"type": "boolean"},
-                "request": {"type": "object"},
             },
             "required": ["data"],
         }
+
+
+class PredictBodyInternal(PredictBody):
+    "Separate class to avoid exposing PydanticStarletteRequest in the API validation"
+
+    request: Optional[PydanticStarletteRequest] = (
+        None  # dictionary of request headers, query parameters, url, etc. (used to to pass in request for queuing)
+    )
 
 
 class ResetBody(BaseModel):
@@ -96,7 +129,7 @@ class ComponentServerJSONBody(BaseModel):
 
 class DataWithFiles(BaseModel):
     data: Any
-    files: List[Tuple[str, bytes]]
+    files: list[tuple[str, bytes]]
 
 
 class ComponentServerBlobBody(BaseModel):
@@ -163,12 +196,12 @@ GradioDataModel = Union[GradioModel, GradioRootModel]
 
 class FileDataDict(TypedDict):
     path: str  # server filepath
-    url: Optional[str]  # normalised server url
-    size: Optional[int]  # size in bytes
-    orig_name: Optional[str]  # original filename
-    mime_type: Optional[str]
+    url: NotRequired[Optional[str]]  # normalised server url
+    size: NotRequired[Optional[int]]  # size in bytes
+    orig_name: NotRequired[Optional[str]]  # original filename
+    mime_type: NotRequired[Optional[str]]
     is_stream: bool
-    meta: dict
+    meta: NotRequired[dict]
 
 
 @document()
@@ -268,7 +301,7 @@ class FileData(GradioModel):
 
 
 class ListFiles(GradioRootModel):
-    root: List[FileData]
+    root: list[FileData]
 
     def __getitem__(self, index):
         return self.root[index]
@@ -334,3 +367,11 @@ class BlocksConfigDict(TypedDict):
     dependencies: NotRequired[list[dict[str, Any]]]
     root: NotRequired[str | None]
     username: NotRequired[str | None]
+    api_prefix: str
+
+
+class MediaStreamChunk(TypedDict):
+    data: bytes
+    duration: float
+    extension: str
+    id: NotRequired[str]

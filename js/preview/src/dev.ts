@@ -57,9 +57,13 @@ export async function create_server({
 					allow: [root_dir, component_dir]
 				}
 			},
+			resolve: {
+				conditions: ["gradio"]
+			},
 			build: {
 				target: config.build.target
 			},
+			optimizeDeps: config.optimizeDeps,
 			plugins: [
 				...plugins(config),
 				make_gradio_plugin({
@@ -122,6 +126,7 @@ export interface ComponentConfig {
 	build: {
 		target: string | string[];
 	};
+	optimizeDeps: object;
 }
 
 async function generate_imports(
@@ -147,7 +152,8 @@ async function generate_imports(
 		},
 		build: {
 			target: []
-		}
+		},
+		optimizeDeps: {}
 	};
 
 	await Promise.all(
@@ -163,6 +169,7 @@ async function generate_imports(
 				component_config.plugins = m.default.plugins || [];
 				component_config.svelte.preprocess = m.default.svelte?.preprocess || [];
 				component_config.build.target = m.default.build?.target || "modules";
+				component_config.optimizeDeps = m.default.optimizeDeps || {};
 			} else {
 			}
 		})
@@ -173,7 +180,7 @@ async function generate_imports(
 			fs.readFileSync(join(component.frontend_dir, "package.json"), "utf-8")
 		);
 
-		const exports: Record<string, string | undefined> = {
+		const exports: Record<string, any | undefined> = {
 			component: pkg.exports["."],
 			example: pkg.exports["./example"]
 		};
@@ -185,13 +192,13 @@ async function generate_imports(
 
 		const example = exports.example
 			? `example: () => import("/@fs/${to_posix(
-					join(component.frontend_dir, exports.example)
+					join(component.frontend_dir, exports.example.gradio)
 				)}"),\n`
 			: "";
 		return `${acc}"${component.component_class_id}": {
 			${example}
 			component: () => import("/@fs/${to_posix(
-				join(component.frontend_dir, exports.component)
+				join(component.frontend_dir, exports.component.gradio)
 			)}")
 			},\n`;
 	}, "");

@@ -4,17 +4,14 @@ from __future__ import annotations
 
 import dataclasses
 import warnings
+from collections.abc import Iterable, Sequence
 from io import BytesIO
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
-    Iterable,
-    List,
     Literal,
     Optional,
-    Sequence,
-    Tuple,
     Union,
     cast,
 )
@@ -50,14 +47,14 @@ class EditorExampleValue(TypedDict):
 
 class EditorData(GradioModel):
     background: Optional[FileData] = None
-    layers: List[FileData] = []
+    layers: list[FileData] = []
     composite: Optional[FileData] = None
     id: Optional[str] = None
 
 
 class EditorDataBlobs(GradioModel):
     background: Optional[bytes]
-    layers: List[Union[bytes, None]]
+    layers: list[Union[bytes, None]]
     composite: Optional[bytes]
 
 
@@ -70,7 +67,7 @@ class BlobData(TypedDict):
 
 class AcceptBlobs(GradioModel):
     data: BlobData
-    files: List[Tuple[str, bytes]]
+    files: list[tuple[str, bytes]]
 
 
 @document()
@@ -171,6 +168,7 @@ class ImageEditor(Component):
         elem_classes: list[str] | str | None = None,
         render: bool = True,
         key: int | str | None = None,
+        placeholder: str | None = None,
         mirror_webcam: bool = True,
         show_share_button: bool | None = None,
         _selectable: bool = False,
@@ -186,12 +184,12 @@ class ImageEditor(Component):
         """
         Parameters:
             value: Optional initial image(s) to populate the image editor. Should be a dictionary with keys: `background`, `layers`, and `composite`. The values corresponding to `background` and `composite` should be images or None, while `layers` should be a list of images. Images can be of type PIL.Image, np.array, or str filepath/URL. Or, the value can be a callable, in which case the function will be called whenever the app loads to set the initial value of the component.
-            height: The height of the component container, specified in pixels if a number is passed, or in CSS units if a string is passed.
-            width: The width of the component container, specified in pixels if a number is passed, or in CSS units if a string is passed.
+            height: The height of the component, specified in pixels if a number is passed, or in CSS units if a string is passed. This has no effect on the preprocessed image files or numpy arrays, but will affect the displayed images.
+            width: The width of the component, specified in pixels if a number is passed, or in CSS units if a string is passed. This has no effect on the preprocessed image files or numpy arrays, but will affect the displayed images.
             image_mode: "RGB" if color, or "L" if black and white. See https://pillow.readthedocs.io/en/stable/handbook/concepts.html for other supported image modes and their meaning.
             sources: List of sources that can be used to set the background image. "upload" creates a box where user can drop an image file, "webcam" allows user to take snapshot from their webcam, "clipboard" allows users to paste an image from the clipboard.
             type: The format the images are converted to before being passed into the prediction function. "numpy" converts the images to numpy arrays with shape (height, width, 3) and values from 0 to 255, "pil" converts the images to PIL image objects, "filepath" passes images as str filepaths to temporary copies of the images.
-            label: The label for this component. Appears above the component and is also used as the header if there are a table of examples for this component. If None and used in a `gr.Interface`, the label will be the name of the parameter this component is assigned to.
+            label: the label for this component. Appears above the component and is also used as the header if there are a table of examples for this component. If None and used in a `gr.Interface`, the label will be the name of the parameter this component is assigned to.
             every: Continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
             inputs: Components that are used as inputs to calculate `value` if `value` is a function (has no effect otherwise). `value` is recalculated any time the inputs change.
             show_label: if True, will display label.
@@ -205,6 +203,7 @@ class ImageEditor(Component):
             elem_classes: An optional list of strings that are assigned as the classes of this component in the HTML DOM. Can be used for targeting CSS styles.
             render: If False, component will not render be rendered in the Blocks context. Should be used if the intention is to assign event listeners now but render the component later.
             key: if assigned, will be used to assume identity across a re-render. Components that have the same key across a re-render will have their value preserved.
+            placeholder: Custom text for the upload area. Overrides default upload messages when provided. Accepts new lines and `#` to designate a heading.
             mirror_webcam: If True webcam will be mirrored. Default is True.
             show_share_button: If True, will show a share icon in the corner of the component that allows user to share outputs to Hugging Face Spaces Discussions. If False, icon does not appear. If set to None (default behavior), then the icon appears if this Gradio app is launched on Spaces, but not otherwise.
             crop_size: The size of the crop box in pixels. If a tuple, the first value is the width and the second value is the height. If a string, the value must be a ratio in the form `width:height` (e.g. "16:9").
@@ -257,6 +256,7 @@ class ImageEditor(Component):
         self.layers = layers
         self.canvas_size = canvas_size
         self.show_fullscreen_button = show_fullscreen_button
+        self.placeholder = placeholder
 
         super().__init__(
             label=label,

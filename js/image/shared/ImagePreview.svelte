@@ -2,7 +2,13 @@
 	import { createEventDispatcher, onMount } from "svelte";
 	import type { SelectData } from "@gradio/utils";
 	import { uploadToHuggingFace } from "@gradio/utils";
-	import { BlockLabel, Empty, IconButton, ShareButton } from "@gradio/atoms";
+	import {
+		BlockLabel,
+		Empty,
+		IconButton,
+		ShareButton,
+		IconButtonWrapper
+	} from "@gradio/atoms";
 	import { Download } from "@gradio/icons";
 	import { get_coordinates_of_clicked_image } from "./utils";
 	import Image from "./Image.svelte";
@@ -62,7 +68,7 @@
 	<Empty unpadded_box={true} size="large"><ImageIcon /></Empty>
 {:else}
 	<div class="image-container" bind:this={image_container}>
-		<div class="icon-buttons">
+		<IconButtonWrapper>
 			{#if !is_full_screen && show_fullscreen_button}
 				<IconButton
 					Icon={Maximize}
@@ -97,9 +103,9 @@
 					{value}
 				/>
 			{/if}
-		</div>
+		</IconButtonWrapper>
 		<button on:click={handle_click}>
-			<div class:selectable>
+			<div class:selectable class="image-frame">
 				<Image src={value.url} alt="" loading="lazy" on:load />
 			</div>
 		</button>
@@ -111,12 +117,10 @@
 		height: 100%;
 		position: relative;
 	}
-	.image-container :global(img),
-	button {
+
+	.image-container button {
 		width: var(--size-full);
 		height: var(--size-full);
-		object-fit: contain;
-		display: block;
 		border-radius: var(--radius-lg);
 
 		display: flex;
@@ -124,17 +128,21 @@
 		justify-content: center;
 	}
 
-	.selectable {
-		cursor: crosshair;
+	.image-frame {
+		width: auto;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.image-frame :global(img) {
+		width: var(--size-full);
+		height: var(--size-full);
+		object-fit: scale-down;
 	}
 
-	.icon-buttons {
-		display: flex;
-		position: absolute;
-		top: 6px;
-		right: 6px;
-		gap: var(--size-1);
-		z-index: 1;
+	.selectable {
+		cursor: crosshair;
 	}
 
 	:global(.fullscreen-controls svg) {
@@ -152,6 +160,6 @@
 	:global(.image-container:fullscreen img) {
 		max-width: 90vw;
 		max-height: 90vh;
-		object-fit: contain;
+		object-fit: scale-down;
 	}
 </style>

@@ -1,5 +1,110 @@
 # @gradio/json
 
+## 0.5.1
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.1
+
+## 0.5.0
+
+### Features
+
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Improve Icon Button consistency
+- [#8843](https://github.com/gradio-app/gradio/pull/8843) [`6f95286`](https://github.com/gradio-app/gradio/commit/6f95286337459efbccb95c9cfac63355669df9ee) - Standardize `height` across components and add `max_height` and `min_height` parameters where appropriate
+
+### Dependencies
+
+- @gradio/atoms@0.9.0
+- @gradio/icons@0.8.0
+- @gradio/statustracker@0.8.0
+- @gradio/utils@0.7.0
+
+## 0.5.0-beta.5
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.5
+- @gradio/icons@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.5
+
+## 0.5.0-beta.4
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.4
+- @gradio/atoms@0.9.0-beta.4
+
+## 0.5.0-beta.3
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.3
+- @gradio/icons@0.8.0-beta.3
+- @gradio/atoms@0.9.0-beta.3
+
+## 0.5.0-beta.2
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.2
+
+## 0.5.0-beta.2
+
+### Features
+
+- [#9313](https://github.com/gradio-app/gradio/pull/9313) [`1fef9d9`](https://github.com/gradio-app/gradio/commit/1fef9d9a26f0ebce4de18c486702661f6539b1c6) - Standardize `height` across components and add `max_height` and `min_height` parameters where appropriate.  Thanks @abidlabs!
+- [#9250](https://github.com/gradio-app/gradio/pull/9250) [`350b0a5`](https://github.com/gradio-app/gradio/commit/350b0a5cafb9176f914f62e7c90de51d4352cc77) - Improve Icon Button consistency.  Thanks @hannahblair!
+
+### Dependency updates
+
+- @gradio/atoms@0.9.0-beta.2
+- @gradio/icons@0.8.0-beta.2
+- @gradio/statustracker@0.8.0-beta.2
+- @gradio/utils@0.7.0-beta.2
+
+## 0.4.1-beta.1
+
+### Dependency updates
+
+- @gradio/atoms@0.8.1-beta.1
+- @gradio/icons@0.8.0-beta.1
+- @gradio/statustracker@0.8.0-beta.1
+- @gradio/utils@0.7.0-beta.1
+
+## 0.5.0
+
+### Features
+
+- [#9276](https://github.com/gradio-app/gradio/pull/9276) [`8362a10`](https://github.com/gradio-app/gradio/commit/8362a10a7e8a3c291fa0300a6f4a23a1ca997b8a) - Fix scrollbars everywhere.  Thanks @aliabid94!
+
+## 0.4.1
+
+### Fixes
+
+- [#9163](https://github.com/gradio-app/gradio/pull/9163) [`2b6cbf2`](https://github.com/gradio-app/gradio/commit/2b6cbf25908e42cf027324e54ef2cc0baad11a91) - fix exports and generate types.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.1
+- @gradio/statustracker@0.7.6
+- @gradio/atoms@0.8.1
+- @gradio/icons@0.7.2
+
+## 0.4.0
+
+### Features
+
+- [#9023](https://github.com/gradio-app/gradio/pull/9023) [`87e3537`](https://github.com/gradio-app/gradio/commit/87e3537342017c7f19d012f0806a14bc264e09f9) - Add height param to gr.JSON.  Thanks @hannahblair!
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/atoms@0.8.0
+- @gradio/statustracker@0.7.5
+- @gradio/icons@0.7.1
+
 ## 0.3.1
 
 ### Dependency updates

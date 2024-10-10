@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable, Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Iterable, Literal, Sequence
+from typing import TYPE_CHECKING, Any, Literal
 
 import numpy as np
 import PIL.Image
@@ -51,6 +52,9 @@ class TextArea(components.Textbox):
         text_align: Literal["left", "right"] | None = None,
         rtl: bool = False,
         show_copy_button: bool = False,
+        max_length: int | None = None,
+        submit_btn: str | bool | None = False,
+        stop_btn: str | bool | None = False,
     ):
         super().__init__(
             value=value,
@@ -77,6 +81,9 @@ class TextArea(components.Textbox):
             text_align=text_align,
             rtl=rtl,
             show_copy_button=show_copy_button,
+            max_length=max_length,
+            submit_btn=submit_btn,
+            stop_btn=stop_btn,
         )
 
 
@@ -115,6 +122,7 @@ class Sketchpad(components.ImageEditor):
         elem_classes: list[str] | str | None = None,
         render: bool = True,
         key: int | str | None = None,
+        placeholder: str | None = None,
         mirror_webcam: bool = True,
         show_share_button: bool | None = None,
         _selectable: bool = False,
@@ -150,6 +158,7 @@ class Sketchpad(components.ImageEditor):
             elem_classes=elem_classes,
             render=render,
             key=key,
+            placeholder=placeholder,
             mirror_webcam=mirror_webcam,
             show_share_button=show_share_button,
             _selectable=_selectable,
@@ -210,6 +219,7 @@ class Paint(components.ImageEditor):
         layers: bool = True,
         canvas_size: tuple[int, int] | None = None,
         show_fullscreen_button: bool = True,
+        placeholder: str | None = None,
     ):
         super().__init__(
             value=value,
@@ -243,6 +253,7 @@ class Paint(components.ImageEditor):
             layers=layers,
             canvas_size=canvas_size,
             show_fullscreen_button=show_fullscreen_button,
+            placeholder=placeholder,
         )
 
 
@@ -285,6 +296,7 @@ class ImageMask(components.ImageEditor):
         elem_classes: list[str] | str | None = None,
         render: bool = True,
         key: int | str | None = None,
+        placeholder: str | None = None,
         mirror_webcam: bool = True,
         show_share_button: bool | None = None,
         _selectable: bool = False,
@@ -320,6 +332,7 @@ class ImageMask(components.ImageEditor):
             elem_classes=elem_classes,
             render=render,
             key=key,
+            placeholder=placeholder,
             mirror_webcam=mirror_webcam,
             show_share_button=show_share_button,
             _selectable=_selectable,
@@ -377,6 +390,7 @@ class PlayableVideo(components.Video):
         min_length: int | None = None,
         max_length: int | None = None,
         loop: bool = False,
+        streaming: bool = False,
         watermark: str | Path | None = None,
     ):
         sources = ["upload"]
@@ -407,6 +421,7 @@ class PlayableVideo(components.Video):
             min_length=min_length,
             max_length=max_length,
             loop=loop,
+            streaming=streaming,
             watermark=watermark,
         )
 
@@ -452,6 +467,7 @@ class Microphone(components.Audio):
         max_length: int | None = None,
         waveform_options: WaveformOptions | dict | None = None,
         loop: bool = False,
+        recording: bool = False,
     ):
         sources = ["microphone"]
         super().__init__(
@@ -481,6 +497,7 @@ class Microphone(components.Audio):
             max_length=max_length,
             waveform_options=waveform_options,
             loop=loop,
+            recording=recording,
         )
 
 
@@ -562,7 +579,7 @@ class Numpy(components.Dataframe):
         | Sequence[components.Component]
         | set[components.Component]
         | None = None,
-        height: int = 500,
+        max_height: int = 500,
         scale: int | None = None,
         min_width: int = 160,
         interactive: bool | None = None,
@@ -595,7 +612,7 @@ class Numpy(components.Dataframe):
             column_widths=column_widths,
             every=every,
             inputs=inputs,
-            height=height,
+            max_height=max_height,
             scale=scale,
             latex_delimiters=latex_delimiters,
             min_width=min_width,
@@ -626,7 +643,7 @@ class Matrix(components.Dataframe):
         | Sequence[components.Component]
         | set[components.Component]
         | None = None,
-        height: int = 500,
+        max_height: int = 500,
         scale: int | None = None,
         min_width: int = 160,
         interactive: bool | None = None,
@@ -659,7 +676,7 @@ class Matrix(components.Dataframe):
             column_widths=column_widths,
             every=every,
             inputs=inputs,
-            height=height,
+            max_height=max_height,
             scale=scale,
             latex_delimiters=latex_delimiters,
             min_width=min_width,
@@ -690,7 +707,7 @@ class List(components.Dataframe):
         | Sequence[components.Component]
         | set[components.Component]
         | None = None,
-        height: int = 500,
+        max_height: int = 500,
         scale: int | None = None,
         min_width: int = 160,
         interactive: bool | None = None,
@@ -723,7 +740,7 @@ class List(components.Dataframe):
             column_widths=column_widths,
             every=every,
             inputs=inputs,
-            height=height,
+            max_height=max_height,
             scale=scale,
             latex_delimiters=latex_delimiters,
             min_width=min_width,

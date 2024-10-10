@@ -10,7 +10,15 @@
 	import { Upload } from "@gradio/upload";
 	import { Image } from "@gradio/image/shared";
 	import type { FileData, Client } from "@gradio/client";
-	import { Clear, File, Music, Paperclip, Video, Send } from "@gradio/icons";
+	import {
+		Clear,
+		File,
+		Music,
+		Paperclip,
+		Video,
+		Send,
+		Square
+	} from "@gradio/icons";
 	import type { SelectData } from "@gradio/utils";
 
 	export let value: { text: string; files: FileData[] } = {
@@ -28,6 +36,7 @@
 	export let container = true;
 	export let max_lines: number;
 	export let submit_btn: string | boolean | null = null;
+	export let stop_btn: string | boolean | null = null;
 	export let rtl = false;
 	export let autofocus = false;
 	export let text_align: "left" | "right" | undefined = undefined;
@@ -45,34 +54,26 @@
 	let can_scroll: boolean;
 	let previous_scroll_top = 0;
 	let user_has_scrolled_up = false;
-	let dragging = false;
+	export let dragging = false;
 	let uploading = false;
 	let oldValue = value.text;
 	$: dispatch("drag", dragging);
+
+	let full_container: HTMLDivElement;
 
 	$: if (oldValue !== value.text) {
 		dispatch("change", value);
 		oldValue = value.text;
 	}
-	let accept_file_types: string | null;
-	if (file_types == null) {
-		accept_file_types = null;
-	} else {
-		file_types = file_types.map((x) => {
-			if (x.startsWith(".")) {
-				return x;
-			}
-			return x + "/*";
-		});
-		accept_file_types = file_types.join(", ");
-	}
 
 	$: if (value === null) value = { text: "", files: [] };
 	$: value, el && lines !== max_lines && resize(el, lines, max_lines);
+	$: can_submit = value.text !== "" || value.files.length > 0;
 
 	const dispatch = createEventDispatcher<{
 		change: typeof value;
 		submit: undefined;
+		stop: undefined;
 		blur: undefined;
 		select: SelectData;
 		input: undefined;
@@ -127,7 +128,9 @@
 		await tick();
 		if (e.key === "Enter" && e.shiftKey && lines > 1) {
 			e.preventDefault();
-			dispatch("submit");
+			if (can_submit) {
+				dispatch("submit");
+			}
 		} else if (
 			e.key === "Enter" &&
 			!e.shiftKey &&
@@ -135,7 +138,9 @@
 			max_lines >= 1
 		) {
 			e.preventDefault();
-			dispatch("submit");
+			if (can_submit) {
+				dispatch("submit");
+			}
 		}
 	}
 
@@ -186,7 +191,11 @@
 		}
 	}
 
-	async function handle_submit(): Promise<void> {
+	function handle_stop(): void {
+		dispatch("stop");
+	}
+
+	function handle_submit(): void {
 		dispatch("submit");
 	}
 
@@ -201,109 +210,184 @@
 			}
 		}
 	}
+
+	function handle_dragenter(event: DragEvent): void {
+		event.preventDefault();
+		dragging = true;
+	}
+
+	function handle_dragleave(event: DragEvent): void {
+		event.preventDefault();
+		const rect = full_container.getBoundingClientRect();
+		const { clientX, clientY } = event;
+		if (
+			clientX <= rect.left ||
+			clientX >= rect.right ||
+			clientY <= rect.top ||
+			clientY >= rect.bottom
+		) {
+			dragging = false;
+		}
+	}
+
+	function handle_drop(event: DragEvent): void {
+		event.preventDefault();
+		dragging = false;
+		if (event.dataTransfer && event.dataTransfer.files) {
+			upload_component.load_files(Array.from(event.dataTransfer.files));
+		}
+	}
 </script>
 
-<!-- svelte-ignore a11y-autofocus -->
-<label class:container>
-	<BlockTitle {show_label} {info}>{label}</BlockTitle>
-	{#if value.files.length > 0 || uploading}
-		<div
-			class="thumbnails scroll-hide"
-			data-testid="container_el"
-			style="display: {value.files.length > 0 || uploading ? 'flex' : 'none'};"
-		>
-			{#each value.files as file, index}
-				<button class="thumbnail-item thumbnail-small">
-					<button
-						class:disabled
-						class="delete-button"
-						on:click={(event) => remove_thumbnail(event, index)}
-						><Clear /></button
-					>
-					{#if file.mime_type && file.mime_type.includes("image")}
-						<Image
-							src={file.url}
-							title={null}
-							alt=""
-							loading="lazy"
-							class={"thumbnail-image"}
-						/>
-					{:else if file.mime_type && file.mime_type.includes("audio")}
-						<Music />
-					{:else if file.mime_type && file.mime_type.includes("video")}
-						<Video />
+<div
+	class="full-container"
+	class:dragging
+	bind:this={full_container}
+	on:dragenter={handle_dragenter}
+	on:dragleave={handle_dragleave}
+	on:dragover|preventDefault
+	on:drop={handle_drop}
+	role="group"
+	aria-label="Multimedia input field"
+>
+	<!-- svelte-ignore a11y-autofocus -->
+	<label class:container>
+		<BlockTitle {root} {show_label} {info}>{label}</BlockTitle>
+		{#if value.files.length > 0 || uploading}
+			<div
+				class="thumbnails scroll-hide"
+				aria-label="Uploaded files"
+				data-testid="container_el"
+				style="display: {value.files.length > 0 || uploading
+					? 'flex'
+					: 'none'};"
+			>
+				{#each value.files as file, index}
+					<span role="listitem" aria-label="File thumbnail">
+						<button class="thumbnail-item thumbnail-small">
+							<button
+								class:disabled
+								class="delete-button"
+								on:click={(event) => remove_thumbnail(event, index)}
+								><Clear /></button
+							>
+							{#if file.mime_type && file.mime_type.includes("image")}
+								<Image
+									src={file.url}
+									title={null}
+									alt=""
+									loading="lazy"
+									class={"thumbnail-image"}
+								/>
+							{:else if file.mime_type && file.mime_type.includes("audio")}
+								<Music />
+							{:else if file.mime_type && file.mime_type.includes("video")}
+								<Video />
+							{:else}
+								<File />
+							{/if}
+						</button>
+					</span>
+				{/each}
+				{#if uploading}
+					<div class="loader" role="status" aria-label="Uploading"></div>
+				{/if}
+			</div>
+		{/if}
+		<div class="input-container">
+			<Upload
+				bind:this={upload_component}
+				on:load={handle_upload}
+				{file_count}
+				filetype={file_types}
+				{root}
+				{max_file_size}
+				bind:dragging
+				bind:uploading
+				show_progress={false}
+				disable_click={true}
+				bind:hidden_upload
+				on:error
+				hidden={true}
+				{upload}
+				{stream_handler}
+			></Upload>
+			<button
+				data-testid="upload-button"
+				class="upload-button"
+				on:click={handle_upload_click}><Paperclip /></button
+			>
+			<textarea
+				data-testid="textbox"
+				use:text_area_resize={{
+					text: value.text,
+					lines: lines,
+					max_lines: max_lines
+				}}
+				class="scroll-hide"
+				class:no-label={!show_label}
+				dir={rtl ? "rtl" : "ltr"}
+				bind:value={value.text}
+				bind:this={el}
+				{placeholder}
+				rows={lines}
+				{disabled}
+				{autofocus}
+				on:keypress={handle_keypress}
+				on:blur
+				on:select={handle_select}
+				on:focus
+				on:scroll={handle_scroll}
+				on:paste={handle_paste}
+				style={text_align ? "text-align: " + text_align : ""}
+			/>
+			{#if submit_btn}
+				<button
+					class="submit-button"
+					class:padded-button={submit_btn !== true}
+					on:click={handle_submit}
+					disabled={!can_submit}
+				>
+					{#if submit_btn === true}
+						<Send />
 					{:else}
-						<File />
+						{submit_btn}
 					{/if}
 				</button>
-			{/each}
-			{#if uploading}
-				<div class="loader"></div>
+			{/if}
+			{#if stop_btn}
+				<button
+					class="stop-button"
+					class:padded-button={stop_btn !== true}
+					on:click={handle_stop}
+				>
+					{#if stop_btn === true}
+						<Square fill={"none"} stroke_width={2.5} />
+					{:else}
+						{stop_btn}
+					{/if}
+				</button>
 			{/if}
 		</div>
-	{/if}
-	<div class="input-container">
-		<Upload
-			bind:this={upload_component}
-			on:load={handle_upload}
-			{file_count}
-			{root}
-			{max_file_size}
-			bind:dragging
-			bind:uploading
-			show_progress={false}
-			disable_click={true}
-			bind:hidden_upload
-			on:error
-			hidden={true}
-			{upload}
-			{stream_handler}
-		></Upload>
-		<button
-			data-testid="upload-button"
-			class="upload-button"
-			on:click={handle_upload_click}><Paperclip /></button
-		>
-		<textarea
-			data-testid="textbox"
-			use:text_area_resize={{
-				text: value.text,
-				lines: lines,
-				max_lines: max_lines
-			}}
-			class="scroll-hide"
-			dir={rtl ? "rtl" : "ltr"}
-			bind:value={value.text}
-			bind:this={el}
-			{placeholder}
-			rows={lines}
-			{disabled}
-			{autofocus}
-			on:keypress={handle_keypress}
-			on:blur
-			on:select={handle_select}
-			on:focus
-			on:scroll={handle_scroll}
-			on:paste={handle_paste}
-			style={text_align ? "text-align: " + text_align : ""}
-		/>
-		{#if submit_btn}
-			<button
-				class="submit-button"
-				class:padded-button={submit_btn !== true}
-				on:click={handle_submit}
-			>
-				{#if submit_btn === true}
-					<Send />
-				{:else}
-					Hello World
-				{/if}
-			</button>
-		{/if}
-	</div>
-</label>
+	</label>
+</div>
 
 <style>
+	.full-container {
+		width: 100%;
+		position: relative;
+	}
+
+	.full-container.dragging::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+	}
+
 	.input-container {
 		display: flex;
 		position: relative;
@@ -313,7 +397,7 @@
 	textarea {
 		flex-grow: 1;
 		outline: none !important;
-		background: var(--input-background-fill);
+		background: var(--block-background-fill);
 		padding: var(--input-padding);
 		color: var(--body-text-color);
 		font-weight: var(--input-text-weight);
@@ -323,6 +407,12 @@
 		margin-top: 0px;
 		margin-bottom: 0px;
 		resize: none;
+		position: relative;
+		z-index: 1;
+	}
+	textarea.no-label {
+		padding-top: 5px;
+		padding-bottom: 5px;
 	}
 
 	textarea:disabled {
@@ -335,9 +425,8 @@
 	}
 
 	.upload-button,
-	.submit-button {
-		background: var(--button-secondary-background-fill);
-		color: var(--button-secondary-text-color);
+	.submit-button,
+	.stop-button {
 		border: none;
 		text-align: center;
 		text-decoration: none;
@@ -350,20 +439,29 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		margin-bottom: 5px;
+		z-index: var(--layer-1);
 	}
 	.padded-button {
 		padding: 0 10px;
 	}
 
+	.stop-button,
+	.upload-button,
+	.submit-button {
+		background: var(--button-secondary-background-fill);
+	}
+
+	.stop-button:hover,
 	.upload-button:hover,
 	.submit-button:hover {
 		background: var(--button-secondary-background-fill-hover);
 	}
 
-	.upload-button:active,
-	.submit-button:active {
-		box-shadow: var(--button-shadow-active);
+	.stop-button:disabled,
+	.upload-button:disabled,
+	.submit-button:disabled {
+		background: var(--button-secondary-background-fill);
+		cursor: initial;
 	}
 
 	.submit-button :global(svg) {
@@ -373,6 +471,11 @@
 	.upload-button :global(svg) {
 		height: 17px;
 		width: 17px;
+	}
+
+	.stop-button :global(svg) {
+		height: 16px;
+		width: 16px;
 	}
 
 	.loader {
@@ -406,11 +509,12 @@
 	}
 
 	.thumbnails {
-		align-self: flex-start;
 		display: flex;
-		justify-content: left;
 		align-items: center;
 		gap: var(--spacing-lg);
+		overflow-x: scroll;
+		padding-top: var(--spacing-sm);
+		margin-bottom: 6px;
 	}
 
 	.thumbnail-item {
